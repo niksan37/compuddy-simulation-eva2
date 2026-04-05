@@ -1,0 +1,641 @@
+@import "tailwindcss";
+
+:root {
+  /* VS Code Theme Variables - Dark Default */
+  --vscode-editor-background: #1e1e1e;
+  --vscode-editor-foreground: #cccccc;
+  --vscode-font-family: "Segoe UI", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+
+  --vscode-button-background: #0e639c;
+  --vscode-button-foreground: #ffffff;
+  --vscode-button-hoverBackground: #1177bb;
+
+  --vscode-button-secondaryBackground: #3a3d41;
+  --vscode-button-secondaryForeground: #ffffff;
+  --vscode-button-secondaryHoverBackground: #45494e;
+
+  --vscode-editor-inactiveSelectionBackground: #37373d;
+  --vscode-inputValidation-errorBackground: #5a1d1d;
+  --vscode-inputValidation-errorForeground: #d7ba7d;
+  --vscode-inputValidation-errorBorder: #be1100;
+
+  --vscode-widget-border: #454545;
+  --vscode-input-background: #3c3c3c;
+  --vscode-input-foreground: #cccccc;
+  --vscode-input-border: #3c3c3c;
+  --vscode-focusBorder: #007fd4;
+
+  --vscode-statusBarItem-errorBackground: #c72e0f;
+
+  --vscode-textCodeBlock-background: rgba(10, 10, 10, 0.4);
+  --vscode-descriptionForeground: #9d9d9d;
+  --vscode-textBlockQuote-background: rgba(255, 255, 255, 0.05);
+  --vscode-panel-border: #80808059;
+  --vscode-list-hoverBackground: #2a2d2e;
+}
+
+body {
+  background-color: var(--vscode-editor-background);
+  color: var(--vscode-editor-foreground);
+  font-family: var(--vscode-font-family);
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+/* Header and Tooltip styles removed */
+
+
+/* Chat Container */
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Messages Area */
+.messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Empty State - Centered Input */
+.chat-container.centered {
+  justify-content: center;
+}
+
+.chat-container.centered .messages {
+  flex: 0;
+  /* Shrink messages area when empty if needed, or just let input-area take center via margin */
+  display: none;
+  /* Hide messages area initially if we want PURE center */
+}
+
+/* 
+   Actually, the user wants "Chatbereich in der Mitte zentral". 
+   If this means the inputs are in the middle:
+*/
+.chat-container.centered .input-area {
+  margin: auto;
+  width: 80%;
+  border: none;
+  background-color: transparent;
+}
+
+
+.message {
+  max-width: 85%;
+  padding: 8px 12px;
+  border-radius: 6px;
+  line-height: 1.5;
+  word-wrap: break-word;
+  font-size: 13px;
+}
+
+.message.user {
+  align-self: flex-end;
+  background-color: var(--vscode-button-background);
+  color: var(--vscode-button-foreground);
+  border-bottom-right-radius: 2px;
+}
+
+.message.ai {
+  align-self: flex-start;
+  background-color: var(--vscode-editor-inactiveSelectionBackground);
+  color: var(--vscode-editor-foreground);
+  border-bottom-left-radius: 2px;
+}
+
+.message.error {
+  align-self: center;
+  background-color: var(--vscode-inputValidation-errorBackground);
+  color: var(--vscode-inputValidation-errorForeground);
+  border: 1px solid var(--vscode-inputValidation-errorBorder);
+}
+
+/* Input Area */
+.input-area {
+  padding: 15px;
+  border-top: 1px solid var(--vscode-widget-border);
+  display: flex;
+  align-items: center;
+  /* Center items vertically */
+  gap: 10px;
+  background-color: var(--vscode-editor-background);
+  transition: all 0.3s ease;
+}
+
+textarea {
+  flex: 1;
+  background-color: var(--vscode-input-background);
+  color: var(--vscode-input-foreground);
+  border: 1px solid var(--vscode-input-border);
+  border-radius: 20px;
+  padding: 10px 15px;
+  resize: none;
+  min-height: 20px;
+  max-height: 25vh;
+  /* Max 1/4 of plugin height */
+  font-family: inherit;
+  line-height: 20px;
+  overflow-y: auto;
+  /* Scrollbar when content exceeds max-height */
+}
+
+textarea:focus {
+  outline: 1px solid var(--vscode-focusBorder);
+}
+
+/* Play/Stop Button */
+.play-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--vscode-button-background);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: background-color 0.2s, transform 0.1s;
+  flex-shrink: 0;
+  border: none;
+  cursor: pointer;
+  /* Added for web */
+}
+
+.play-btn:hover {
+  background-color: var(--vscode-button-hoverBackground);
+}
+
+.play-btn:active {
+  transform: scale(0.95);
+}
+
+.icon-play,
+.icon-stop {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* Stop button state styling if different color desired */
+.play-btn.stopped {
+  background-color: var(--vscode-statusBarItem-errorBackground);
+  /* Reddish for stop? Or just keep standard */
+}
+
+/* Typing Indicator */
+.typing-indicator {
+  display: flex;
+  align-items: center;
+  column-gap: 4px;
+  padding: 12px 16px;
+  /* Match message padding roughly */
+  background-color: var(--vscode-editor-inactiveSelectionBackground);
+  /* Same as AI message bg */
+  border-radius: 6px;
+  border-bottom-left-radius: 2px;
+  width: fit-content;
+  align-self: flex-start;
+  margin-bottom: 10px;
+  /* Gap like messages */
+}
+
+.typing-dot {
+  width: 6px;
+  height: 6px;
+  background-color: var(--vscode-editor-foreground);
+  border-radius: 50%;
+  animation: typing 1.4s infinite ease-in-out both;
+  opacity: 0.7;
+}
+
+.typing-dot:nth-child(1) {
+  animation-delay: -0.32s;
+}
+
+.typing-dot:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+@keyframes typing {
+
+  0%,
+  80%,
+  100% {
+    transform: scale(0);
+  }
+
+  40% {
+    transform: scale(1);
+  }
+}
+
+/* Markdown Rendering */
+.message.ai pre.md-code-block {
+  background-color: var(--vscode-textCodeBlock-background, rgba(0, 0, 0, 0.2));
+  border-radius: 4px;
+  padding: 8px 10px;
+  margin: 6px 0;
+  overflow-x: auto;
+  font-family: var(--vscode-editor-font-family, 'Consolas', monospace);
+  font-size: 12px;
+  line-height: 1.4;
+  white-space: pre;
+}
+
+.message.ai pre.md-code-block code {
+  background: none;
+  padding: 0;
+  font-family: inherit;
+}
+
+.message.ai code.md-inline-code {
+  background-color: var(--vscode-textCodeBlock-background, rgba(0, 0, 0, 0.2));
+  padding: 1px 4px;
+  border-radius: 3px;
+  font-family: var(--vscode-editor-font-family, 'Consolas', monospace);
+  font-size: 12px;
+}
+
+.message.ai .md-h2 {
+  font-size: 1.2em;
+  font-weight: 600;
+  margin: 8px 0 4px 0;
+}
+
+.message.ai .md-h3 {
+  font-size: 1.1em;
+  font-weight: 600;
+  margin: 6px 0 3px 0;
+}
+
+.message.ai .md-h4 {
+  font-size: 1em;
+  font-weight: 600;
+  margin: 4px 0 2px 0;
+}
+
+.message.ai ul.md-ul {
+  margin: 4px 0;
+  padding-left: 18px;
+}
+
+.message.ai li.md-li {
+  margin: 2px 0;
+}
+
+.message.ai strong {
+  font-weight: 600;
+}
+
+.message.ai em {
+  font-style: italic;
+}
+
+/* Onboarding Overlay */
+.onboarding-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--vscode-editor-background);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.onboarding-overlay.hidden {
+  display: none;
+}
+
+.onboarding-card {
+  max-width: 100%;
+  width: 100%;
+}
+
+.onboarding-card.hidden {
+  display: none;
+}
+
+.onboarding-card h2 {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 12px 0;
+  color: var(--vscode-editor-foreground);
+}
+
+.onboarding-card h3 {
+  font-size: 13px;
+  font-weight: 600;
+  margin: 14px 0 6px 0;
+  color: var(--vscode-editor-foreground);
+}
+
+.onboarding-card p {
+  font-size: 12px;
+  line-height: 1.6;
+  margin: 6px 0;
+  color: var(--vscode-descriptionForeground);
+}
+
+.onboarding-card ul {
+  margin: 6px 0;
+  padding-left: 18px;
+}
+
+.onboarding-card li {
+  font-size: 12px;
+  line-height: 1.6;
+  margin: 4px 0;
+  color: var(--vscode-descriptionForeground);
+}
+
+.onboarding-footer {
+  font-size: 11px !important;
+  font-style: italic;
+  opacity: 0.7;
+  margin-top: 12px !important;
+}
+
+.onboarding-callout {
+  background-color: var(--vscode-textBlockQuote-background, rgba(255, 255, 255, 0.05));
+  border-left: 3px solid var(--vscode-focusBorder);
+  padding: 8px 12px;
+  margin: 12px 0;
+  border-radius: 0 4px 4px 0;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--vscode-descriptionForeground);
+}
+
+.onboarding-buttons {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 16px;
+}
+
+.onboarding-btn {
+  padding: 6px 16px;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+}
+
+.onboarding-btn.primary {
+  background-color: var(--vscode-button-background);
+  color: var(--vscode-button-foreground);
+}
+
+.onboarding-btn.primary:hover {
+  background-color: var(--vscode-button-hoverBackground);
+}
+
+.onboarding-btn.secondary {
+  background-color: var(--vscode-button-secondaryBackground);
+  color: var(--vscode-button-secondaryForeground);
+}
+
+.onboarding-btn.secondary:hover {
+  background-color: var(--vscode-button-secondaryHoverBackground);
+}
+
+/* Disabled textarea during onboarding */
+textarea:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Settings Panel */
+.settings-panel {
+  padding: 12px 15px;
+  border-bottom: 1px solid var(--vscode-panel-border);
+  background-color: var(--vscode-editor-background);
+}
+
+.settings-panel.hidden {
+  display: none;
+}
+
+.settings-panel h3 {
+  font-size: 13px;
+  font-weight: 600;
+  margin: 0 0 10px 0;
+  color: var(--vscode-editor-foreground);
+}
+
+.settings-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.settings-item label:first-child {
+  font-size: 12px;
+  color: var(--vscode-descriptionForeground);
+}
+
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 36px;
+  height: 20px;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--vscode-input-background);
+  transition: 0.2s;
+  border-radius: 20px;
+}
+
+.toggle-slider::before {
+  content: "";
+  position: absolute;
+  height: 14px;
+  width: 14px;
+  left: 3px;
+  bottom: 3px;
+  background-color: var(--vscode-descriptionForeground);
+  transition: 0.2s;
+  border-radius: 50%;
+}
+
+.toggle-switch input:checked+.toggle-slider {
+  background-color: var(--vscode-button-background);
+}
+
+.toggle-switch input:checked+.toggle-slider::before {
+  transform: translateX(16px);
+  background-color: var(--vscode-button-foreground);
+}
+
+.settings-btn {
+  width: 100%;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  background-color: var(--vscode-button-secondaryBackground);
+  color: var(--vscode-button-secondaryForeground);
+  font-family: inherit;
+}
+
+.settings-btn:hover {
+  background-color: var(--vscode-button-secondaryHoverBackground);
+}
+
+.quick-actions {
+  display: flex;
+  gap: 8px;
+  padding: 6px 15px;
+  justify-content: center;
+}
+
+.quick-actions.hidden {
+  display: none;
+}
+
+.qa-bubble {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.qa-label {
+  background-color: var(--vscode-button-background);
+  color: var(--vscode-button-foreground);
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 11px;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.2s;
+  white-space: nowrap;
+}
+
+.qa-label:hover {
+  background-color: var(--vscode-button-hoverBackground);
+}
+
+.qa-options {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 4px;
+  animation: fadeIn 0.15s ease-out;
+  /* In VS code logic, this might be absolute/overlay. 
+       In CSS provided, it's just flow. 
+       Wait, in my previous read of styles.css I saw .qa-options was just a flex col.
+       Let's stick to this. */
+  position: absolute;
+  /* Added for correct overlay behavior in web */
+  bottom: 100%;
+  margin-bottom: 5px;
+  background: #252526;
+  padding: 5px;
+  border-radius: 6px;
+  border: 1px solid #454545;
+  z-index: 50;
+  min-width: 130px;
+}
+
+.qa-options.hidden {
+  display: none;
+}
+
+.qa-options button {
+  background-color: var(--vscode-editor-inactiveSelectionBackground);
+  color: var(--vscode-editor-foreground);
+  border: none;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 11px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.15s;
+  text-align: left;
+}
+
+.qa-options button:hover {
+  background-color: var(--vscode-list-hoverBackground);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Make SurveyJS Matrix column headers sticky */
+.sd-matrix table {
+  border-collapse: separate !important;
+  border-spacing: 0;
+}
+
+.sd-matrix table>thead>tr>th,
+.sd-matrix table>thead>tr>td,
+table.sv-matrix>thead>tr>th,
+table.sv-matrix>thead>tr>td {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 10 !important;
+  background-color: var(--sjs-general-backcolor, #ffffff) !important;
+  /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important; */
+}
+
+/* Make sure inner cell contents don't overlap the scroll bar awkwardly and are readable */
+.sd-matrix table th {
+  background-clip: padding-box;
+}
+
+/* Force wrappers to NOT have overflow: auto/hidden, otherwise position: sticky breaks */
+.sd-matrix,
+.sv-matrix,
+.sd-matrix__wrapper,
+.sd-table__wrapper,
+.sv-table-wrapper,
+.sd-element--with-frame,
+.sv-scroll__scroller,
+.sd-root-modern,
+.sv-scroll__container {
+  overflow: visible !important;
+}

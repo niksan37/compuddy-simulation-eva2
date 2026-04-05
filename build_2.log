@@ -1,0 +1,28 @@
+
+> extension_simulation@0.1.0 build
+> next build
+
+▲ Next.js 16.1.6 (Turbopack)
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 1331.0ms
+  Running TypeScript ...
+Failed to compile.
+
+./src/components/CompuddySidebar.tsx:189:29
+Type error: Argument of type '(prev: Message[]) => (Message | { id: string; text: string; sender: "error"; error: true; })[]' is not assignable to parameter of type 'SetStateAction<Message[]>'.
+  Type '(prev: Message[]) => (Message | { id: string; text: string; sender: "error"; error: true; })[]' is not assignable to type '(prevState: Message[]) => Message[]'.
+    Type '(Message | { id: string; text: string; sender: "error"; error: true; })[]' is not assignable to type 'Message[]'.
+      Type 'Message | { id: string; text: string; sender: "error"; error: true; }' is not assignable to type 'Message'.
+        Type '{ id: string; text: string; sender: "error"; error: true; }' is not assignable to type 'Message'.
+          Types of property 'sender' are incompatible.
+            Type '"error"' is not assignable to type '"user" | "ai"'.
+
+[0m [90m 187 |[39m         } [36mcatch[39m (error[33m:[39m any) {
+ [90m 188 |[39m             [36mif[39m (error[33m.[39mname [33m===[39m [32m'AbortError'[39m) {
+[31m[1m>[22m[39m[90m 189 |[39m                 setMessages(prev [33m=>[39m [[33m...[39mprev[33m,[39m { id[33m:[39m [33mDate[39m[33m.[39mnow()[33m.[39mtoString()[33m,[39m text[33m:[39m [32m'Request cancelled.'[39m[33m,[39m sender[33m:[39m [32m'error'[39m[33m,[39m error[33m:[39m [36mtrue[39m }])[33m;[39m
+ [90m     |[39m                             [31m[1m^[22m[39m
+ [90m 190 |[39m             } [36melse[39m {
+ [90m 191 |[39m                 setMessages(prev [33m=>[39m [[33m...[39mprev[33m,[39m { id[33m:[39m [33mDate[39m[33m.[39mnow()[33m.[39mtoString()[33m,[39m text[33m:[39m [32m'Error: '[39m [33m+[39m error[33m.[39mmessage[33m,[39m sender[33m:[39m [32m'error'[39m[33m,[39m error[33m:[39m [36mtrue[39m }])[33m;[39m
+ [90m 192 |[39m             }[0m
+Next.js build worker exited with code: 1 and signal: null

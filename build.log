@@ -1,0 +1,22 @@
+
+> extension_simulation@0.1.0 build
+> next build
+
+▲ Next.js 16.1.6 (Turbopack)
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 1513.4ms
+  Running TypeScript ...
+Failed to compile.
+
+./src/app/page.tsx:10:10
+Type error: Type '{}' is missing the following properties from type 'CompuddySidebarProps': isSettingsOpen, onCloseSettings
+
+[0m [90m  8 |[39m       {[90m/* Sidebar Content */[39m}
+ [90m  9 |[39m       [33m<[39m[33mdiv[39m className[33m=[39m[32m"h-full w-full"[39m[33m>[39m
+[31m[1m>[22m[39m[90m 10 |[39m         [33m<[39m[33mCompuddySidebar[39m [33m/[39m[33m>[39m
+ [90m    |[39m          [31m[1m^[22m[39m
+ [90m 11 |[39m       [33m<[39m[33m/[39m[33mdiv[39m[33m>[39m
+ [90m 12 |[39m
+ [90m 13 |[39m       {[90m/* Editor is handled inside Layout's "monaco-editor-container" div, [39m[0m
+Next.js build worker exited with code: 1 and signal: null
